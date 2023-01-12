@@ -1,12 +1,16 @@
 import { Select, Spin } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import { useQuery } from "react-query";
 import ErrorWrapper, { Error } from "../../helper/Error";
 
 import { fetchBreedType } from "../../requests/homeRequests";
-import { Container, Header } from "./style";
+import { CatContext, SET_BREED } from "./CatContext";
+import { Container, DropdownTitle, Header } from "./style";
 
 function Home(params) {
+  // Context to utilize context state
+  const catContextData = useContext(CatContext);
+
   // query object to fetch breed types
   const {
     isLoading: isLoadingBreed,
@@ -33,11 +37,21 @@ function Home(params) {
 
       {isLoadingBreed && <Spin />}
 
-      <Select
-        placeholder="Select type"
-        style={{ width: 200 }}
-        options={breedsData}
-      />
+      {!isBreedsError && !isLoadingBreed && (
+        <>
+          <DropdownTitle>Breed</DropdownTitle>
+          <Select
+            placeholder="Select type"
+            style={{ width: 200 }}
+            value={catContextData?.selectedBreed}
+            onChange={(value) => {
+              catContextData?.dispatchEvent(SET_BREED, value);
+            }}
+            options={breedsData}
+          />
+          <br />
+        </>
+      )}
     </Container>
   );
 }
