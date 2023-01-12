@@ -1,10 +1,10 @@
 import { Select, Spin } from "antd";
 import React, { useContext } from "react";
-import { useQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import ErrorWrapper, { Error } from "../../helper/Error";
 
-import { fetchBreedType } from "../../requests/homeRequests";
-import { CatContext, SET_BREED } from "./CatContext";
+import { fetchBreedType, fetchCatsInfo } from "../../requests/homeRequests";
+import { CatContext, RESET_PAGE, SET_BREED } from "./CatContext";
 import { Container, DropdownTitle, Header } from "./style";
 
 function Home(params) {
@@ -19,6 +19,23 @@ function Home(params) {
   } = useQuery(["breed"], () => fetchBreedType(), {
     keepPreviousData: true,
   });
+
+  const { data } = useInfiniteQuery(
+    ["cats", catContextData?.selectedBreed],
+    () => {
+      fetchCatsInfo({
+        page: catContextData?.page,
+        selectedBreed: catContextData?.selectedBreed,
+        dispatchEvent: catContextData?.dispatchEvent,
+      });
+    },
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage?.length < 10 ? undefined : lastPage;
+      },
+      keepPreviousData: true,
+    }
+  );
 
   return (
     <Container>
@@ -46,6 +63,7 @@ function Home(params) {
             value={catContextData?.selectedBreed}
             onChange={(value) => {
               catContextData?.dispatchEvent(SET_BREED, value);
+              catContextData?.dispatchEvent(RESET_PAGE);
             }}
             options={breedsData}
           />

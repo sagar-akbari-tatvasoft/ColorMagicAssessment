@@ -1,15 +1,24 @@
 import { axiosInstance } from "../helper/axios";
+import { INCREMENT_PAGE } from "../pages/home/CatContext";
 
 // Fetch cats infomation
-export const fetchCatsInfo = async ({ page = 1, breedId }) => {
+export const fetchCatsInfo = async ({
+  page = 1,
+  selectedBreed,
+  dispatchEvent,
+}) => {
+  if (!selectedBreed) {
+    throw new Error("No breed selected.");
+  }
   const response = await axiosInstance.get(`images/search`, {
     params: {
       page: page,
       limit: 10,
-      breed_id: breedId,
+      breed_id: selectedBreed,
       order: "ASC",
     },
   });
+  dispatchEvent(INCREMENT_PAGE);
   return response.data;
 };
 

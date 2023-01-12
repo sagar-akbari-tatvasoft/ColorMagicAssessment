@@ -8,12 +8,20 @@ export const SET_BREED = "SET_BREED";
 export const CatContext = createContext({});
 
 export default function CatContextProvider(params) {
+  // To track page number
+  const [page, setPage] = useState(1);
   // To track selected breed type
   const [selectedBreed, setSelectedBreed] = useState();
 
   // dispatch function for handing actions
   const dispatchEvent = (actionType, payload) => {
     switch (actionType) {
+      case INCREMENT_PAGE:
+        setPage((page) => page + 1);
+        return;
+      case RESET_PAGE:
+        setPage(0);
+        return;
       case SET_BREED:
         setSelectedBreed(payload);
         return;
@@ -24,7 +32,7 @@ export default function CatContextProvider(params) {
 
   return (
     <>
-      <CatContext.Provider value={{ selectedBreed, dispatchEvent }}>
+      <CatContext.Provider value={{ page, selectedBreed, dispatchEvent }}>
         {params?.children}
       </CatContext.Provider>
     </>
