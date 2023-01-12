@@ -1,23 +1,11 @@
 import "./App.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import Home from "./pages/home/Home";
-import Detail from "./pages/detail/Detail";
 import CatContextProvider from "./pages/home/CatContext";
+import { router } from "./navigation";
 
 function App() {
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Home />,
-    },
-    {
-      path: "/:id",
-      element: <Detail />,
-    },
-  ]);
-
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
