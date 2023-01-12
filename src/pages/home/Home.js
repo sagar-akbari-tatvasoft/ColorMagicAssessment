@@ -1,6 +1,7 @@
-import { Select } from "antd";
+import { Select, Spin } from "antd";
 import React from "react";
 import { useQuery } from "react-query";
+import ErrorWrapper, { Error } from "../../helper/Error";
 
 import { fetchBreedType } from "../../requests/homeRequests";
 import { Container, Header } from "./style";
@@ -19,8 +20,18 @@ function Home(params) {
     <Container>
       <Header>Cat Browser</Header>
 
-      {isBreedsError && "Error"}
-      {isLoadingBreed && "loading"}
+      {/* Error handing block */}
+      <ErrorWrapper>
+        {isBreedsError ? (
+          <Error
+            message={
+              "Apologies but we could not load new cats breeds for you at this time! Miau!"
+            }
+          />
+        ) : null}
+      </ErrorWrapper>
+
+      {isLoadingBreed && <Spin />}
 
       <Select
         placeholder="Select type"
