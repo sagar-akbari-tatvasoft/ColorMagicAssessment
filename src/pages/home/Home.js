@@ -1,11 +1,22 @@
 import { Select, Spin } from "antd";
 import React, { useContext } from "react";
 import { useInfiniteQuery, useQuery } from "react-query";
-import ErrorWrapper, { Error } from "../../helper/Error";
+import { Link } from "react-router-dom";
 
+import ErrorWrapper, { Error } from "../../helper/Error";
 import { fetchBreedType, fetchCatsInfo } from "../../requests/homeRequests";
 import { CatContext, RESET_PAGE, SET_BREED } from "./CatContext";
-import { Container, DropdownTitle, Header } from "./style";
+import {
+  Container,
+  DropdownTitle,
+  Header,
+  CatCard,
+  CatContainer,
+  CatWrapper,
+  LoadMoreButton,
+  ViewDetailButton,
+  ViewDetailButtonContainer,
+} from "./style";
 
 function Home(params) {
   // Context to utilize context state
@@ -20,16 +31,24 @@ function Home(params) {
     keepPreviousData: true,
   });
 
-  const { data } = useInfiniteQuery(
-    ["cats", catContextData?.selectedBreed],
-    () => {
+  // infiniteQuery object to fetch cats info
+  const {
+    isLoading: isLoadingCats,
+    data: catsData,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage: isFetchingNextPageCats,
+  } = useInfiniteQuery(
+    ["Cats", catContextData?.selectedBreed],
+    () =>
       fetchCatsInfo({
         page: catContextData?.page,
         selectedBreed: catContextData?.selectedBreed,
         dispatchEvent: catContextData?.dispatchEvent,
-      });
-    },
+      }),
     {
+      // Check for availble next page
       getNextPageParam: (lastPage) => {
         return lastPage?.length < 10 ? undefined : lastPage;
       },
@@ -52,8 +71,6 @@ function Home(params) {
         ) : null}
       </ErrorWrapper>
 
-      {isLoadingBreed && <Spin />}
-
       {!isBreedsError && !isLoadingBreed && (
         <>
           <DropdownTitle>Breed</DropdownTitle>
@@ -69,6 +86,37 @@ function Home(params) {
           />
           <br />
         </>
+      )}
+
+      {(isLoadingCats || isLoadingBreed || isFetching) && <Spin />}
+
+      <CatWrapper>
+        {catsData?.pages?.flat(1)?.map((cat, index) => {
+          return (
+            <CatContainer key={index}>
+              <CatCard>
+                <img src={cat?.url} alt="Cat" />
+                <ViewDetailButtonContainer>
+                  <ViewDetailButton>
+                    <Link to={`/${cat?.id}`}>View Details</Link>
+                  </ViewDetailButton>
+                </ViewDetailButtonContainer>
+              </CatCard>
+            </CatContainer>
+          );
+        })}
+      </CatWrapper>
+      {isFetchingNextPageCats && <Spin />}
+
+      {hasNextPage && !isFetchingNextPageCats && (
+        <LoadMoreButton
+          onClick={() => {
+            fetchNextPage();
+          }}
+          disabled={!hasNextPage || isFetchingNextPageCats}
+        >
+          Load More
+        </LoadMoreButton>
       )}
     </Container>
   );
