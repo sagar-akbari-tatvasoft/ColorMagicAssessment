@@ -2,7 +2,6 @@ import { Select, Spin } from "antd";
 import React, { useContext } from "react";
 import { useInfiniteQuery, useQuery } from "react-query";
 import { Link } from "react-router-dom";
-
 import ErrorWrapper, { Error } from "../../helper/Error";
 import { fetchBreedType, fetchCatsInfo } from "../../requests/homeRequests";
 import { CatContext, RESET_PAGE, SET_BREED } from "./CatContext";
@@ -39,6 +38,7 @@ function Home(params) {
     hasNextPage,
     isFetching,
     isFetchingNextPage: isFetchingNextPageCats,
+    isError: isErrorCats,
   } = useInfiniteQuery(
     ["Cats", catContextData?.selectedBreed],
     () =>
@@ -66,6 +66,15 @@ function Home(params) {
           <Error
             message={
               "Apologies but we could not load new cats breeds for you at this time! Miau!"
+            }
+          />
+        ) : isErrorCats && !isLoadingBreed ? (
+          <Error
+            type={catContextData?.selectedBreed ? "error" : "info"}
+            message={
+              catContextData?.selectedBreed
+                ? "Apologies but we could not load new cats for you at this time! Miau!"
+                : "No Breed Selected."
             }
           />
         ) : null}

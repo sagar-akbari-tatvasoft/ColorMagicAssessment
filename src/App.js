@@ -1,9 +1,10 @@
 import "./App.css";
-import Home from "./pages/home/Home";
-import Detail from "./pages/detail/Detail";
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
+
+import Home from "./pages/home/Home";
+import Detail from "./pages/detail/Detail";
+import CatContextProvider from "./pages/home/CatContext";
 
 function App() {
   const router = createBrowserRouter([
@@ -30,11 +31,13 @@ function App() {
   });
 
   return (
-    <div className="App">
+    <>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <CatContextProvider>
+          <RouterProvider router={router} />
+        </CatContextProvider>
       </QueryClientProvider>
-    </div>
+    </>
   );
 }
 

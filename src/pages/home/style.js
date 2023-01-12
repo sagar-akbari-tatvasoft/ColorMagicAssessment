@@ -24,6 +24,7 @@ export const ViewDetailButtonContainer = styled.section`
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 12px 14px;
 `;
 
@@ -70,4 +71,13 @@ export const CatCard = styled.section`
     height: 200px;
     object-fit: cover;
   }
+`;
+
+export const LoadMoreButton = styled.button`
+  color: white;
+  cursor: pointer;
+  background-color: green;
+  border-radius: 5px;
+  border-width: 0px;
+  padding: 10px;
 `;
