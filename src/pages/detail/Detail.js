@@ -18,8 +18,10 @@ import {
 } from "./style";
 
 function Detail(params) {
+  // Get id from url
   let { id } = useParams();
 
+  // Fetch cat detail
   const {
     isLoading,
     isError,

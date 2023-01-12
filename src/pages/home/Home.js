@@ -80,6 +80,7 @@ function Home(params) {
         ) : null}
       </ErrorWrapper>
 
+      {/* Select dropdown for breed select */}
       {!isBreedsError && !isLoadingBreed && (
         <>
           <DropdownTitle>Breed</DropdownTitle>
@@ -99,6 +100,7 @@ function Home(params) {
 
       {(isLoadingCats || isLoadingBreed || isFetching) && <Spin />}
 
+      {/* Cats chicklet block */}
       <CatWrapper>
         {catsData?.pages?.flat(1)?.map((cat, index) => {
           return (
@@ -117,6 +119,7 @@ function Home(params) {
       </CatWrapper>
       {isFetchingNextPageCats && <Spin />}
 
+      {/* Load more button to fetch more data */}
       {hasNextPage && !isFetchingNextPageCats && (
         <LoadMoreButton
           onClick={() => {
